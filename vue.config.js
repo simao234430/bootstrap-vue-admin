@@ -1,12 +1,26 @@
-const bootstrapSassAbstractsImports = require("vue-cli-plugin-bootstrap-vue/sassAbstractsImports.js");
+const path = require("path");
+
 module.exports = {
+  publicPath: "/",
   css: {
     loaderOptions: {
       sass: {
-        additionalData: bootstrapSassAbstractsImports.join("\n"),
+        sassOptions: {
+          includePaths: ["./node_modules", "./src/assets"],
+        },
       },
-      scss: {
-        additionalData: [...bootstrapSassAbstractsImports, ""].join(";\n"),
+    },
+  },
+  configureWebpack: {
+    resolve: {
+      alias: {
+        "@themeConfig": path.resolve(__dirname, "themeConfig.js"),
+        "@core": path.resolve(__dirname, "src/@core"),
+        // "@validations": path.resolve(
+        //   __dirname,
+        //   "src/@core/utils/validations/validations.js"
+        // ),
+        // "@axios": path.resolve(__dirname, "src/libs/axios"),
       },
     },
   },
