@@ -5,7 +5,7 @@
     :data-col="isNavMenuHidden ? '1-column' : null"
   >
     <!-- Navbar -->
-    <!-- <b-navbar
+    <b-navbar
       :toggleable="false"
       :variant="navbarBackgroundColor"
       class="header-navbar navbar navbar-shadow align-items-center"
@@ -24,7 +24,7 @@
           :toggle-vertical-menu-active="toggleVerticalMenuActive"
         />
       </slot>
-    </b-navbar> -->
+    </b-navbar>
     <!--/ Navbar -->
 
     <!-- Vertical Nav Menu -->
@@ -46,14 +46,44 @@
       @click="isVerticalMenuActive = false"
     />
     <!-- /Vertical Nav Menu Overlay -->
+
+    <!-- Content -->
+
+    <!-- CONTENT TYPE: Left -->
+    <transition :name="routerTransition" mode="out-in">
+      <component
+        :is="layoutContentRenderer"
+        :key="
+          layoutContentRenderer === 'layout-content-renderer-left'
+            ? $route.meta.navActiveLink || $route.name
+            : null
+        "
+      >
+        <template v-for="(index, name) in $scopedSlots" v-slot:[name]="data">
+          <slot :name="name" v-bind="data" />
+        </template>
+      </component>
+    </transition>
+    <!--/ Content -->
+
+    <!-- Footer -->
+    <footer class="footer footer-light" :class="[footerTypeClass]">
+      <slot name="footer">
+        <app-footer />
+      </slot>
+    </footer>
+    <!-- /Footer -->
   </div>
 </template>
 
 <script>
+import LayoutContentRendererDefault from "@core/layouts/components/layout-content-renderer/LayoutContentRendererDefault.vue";
+import LayoutContentRendererLeft from "@core/layouts/components/layout-content-renderer/LayoutContentRendererLeft.vue";
+import LayoutContentRendererLeftDetached from "@core/layouts/components/layout-content-renderer/LayoutContentRendererLeftDetached.vue";
 import { onUnmounted } from "@vue/composition-api";
-
+import AppFooter from "@core/layouts/components/AppFooter.vue";
 import useAppConfig from "@core/app-config/useAppConfig";
-
+import AppNavbarVerticalLayout from "@core/layouts/components/app-navbar/AppNavbarVerticalLayout.vue";
 import VerticalNavMenu from "./components/vertical-nav-menu/VerticalNavMenu.vue";
 import useVerticalLayout from "./useVerticalLayout";
 import mixinVerticalLayout from "./mixinVerticalLayout";
@@ -61,24 +91,24 @@ import mixinVerticalLayout from "./mixinVerticalLayout";
 export default {
   components: {
     // AppBreadcrumb,
-    // AppNavbarVerticalLayout,
-    // AppFooter,
+    AppNavbarVerticalLayout,
+    AppFooter,
     VerticalNavMenu,
 
-    //   LayoutContentRendererLeftDetached,
-    //   LayoutContentRendererLeft,
-    //   LayoutContentRendererDefault,
+    LayoutContentRendererLeftDetached,
+    LayoutContentRendererLeft,
+    LayoutContentRendererDefault,
   },
   mixins: [mixinVerticalLayout],
   computed: {
-    // layoutContentRenderer() {
-    //   const rendererType = this.$route.meta.contentRenderer;
-    //   if (rendererType === "sidebar-left")
-    //     return "layout-content-renderer-left";
-    //   if (rendererType === "sidebar-left-detached")
-    //     return "layout-content-renderer-left-detached";
-    //   return "layout-content-renderer-default";
-    // },
+    layoutContentRenderer() {
+      const rendererType = this.$route.meta.contentRenderer;
+      if (rendererType === "sidebar-left")
+        return "layout-content-renderer-left";
+      if (rendererType === "sidebar-left-detached")
+        return "layout-content-renderer-left-detached";
+      return "layout-content-renderer-default";
+    },
   },
   setup() {
     const {

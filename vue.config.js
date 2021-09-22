@@ -1,6 +1,9 @@
 const path = require("path");
 
 module.exports = {
+  devServer: {
+    host: "localhost",
+  },
   publicPath: "/",
   css: {
     loaderOptions: {
@@ -20,7 +23,7 @@ module.exports = {
         //   __dirname,
         //   "src/@core/utils/validations/validations.js"
         // ),
-        // "@axios": path.resolve(__dirname, "src/libs/axios"),
+        "@axios": path.resolve(__dirname, "src/libs/axios"),
       },
     },
   },
